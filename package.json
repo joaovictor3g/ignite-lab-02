@@ -12,6 +12,8 @@
     "@chakra-ui/react": "^1.8.6",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@vime/core": "^5.3.1",
+    "@vime/react": "^5.3.1",
     "cypress": "^9.5.1",
     "date-fns": "^2.28.0",
     "framer-motion": "^6",

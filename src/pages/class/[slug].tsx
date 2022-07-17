@@ -1,35 +1,13 @@
-import { Header, Lesson, Sidebar, Video } from "@/components/shared";
-import { ssrQuery } from "@/lib/ssr-query";
-import { ApolloError, gql } from "@apollo/client";
+import { Header, Sidebar, Video } from "@/components/shared";
 import { Box, Flex } from "@chakra-ui/react";
-import type { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
-interface Lesson {
-  id: string;
-  title: string;
-}
+export default function Class() {
+  const {
+    query: { slug },
+  } = useRouter();
 
-interface HomeProps {
-  lessons: Lesson[];
-  error: ApolloError | null;
-}
-
-const GET_LESSONS_QUERY = gql`
-  query {
-    lessons {
-      id
-      title
-
-      teacher {
-        name
-        bio
-      }
-    }
-  }
-`;
-
-export default function Class({ lessons }: HomeProps) {
   return (
     <Box display="flex" flexDirection="column" minH="100vh">
       <Head>
@@ -37,30 +15,9 @@ export default function Class({ lessons }: HomeProps) {
       </Head>
       <Header />
       <Flex as="main" flex="1">
-        <Video />
+        {!!slug ? <Video lessonSlug={slug as string} /> : <Box flex="1" />}
         <Sidebar />
       </Flex>
-      {/* <Lesson /> */}
     </Box>
   );
 }
-
-export const getStaticPaths: GetStaticPaths = async (ctx) => {
-  return {
-    paths: [],
-    fallback: true,
-  };
-};
-
-export const getStaticProps: GetStaticProps = async (ctx) => {
-  const { data, error } = await ssrQuery<{ lessons: Lesson[] }>({
-    query: GET_LESSONS_QUERY,
-  });
-
-  return {
-    props: {
-      lessons: data.lessons,
-      error,
-    },
-  };
-};
