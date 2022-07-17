@@ -8,6 +8,8 @@ export default function Class() {
     query: { slug },
   } = useRouter();
 
+  const lessonSlug = slug?.[0];
+
   return (
     <Box display="flex" flexDirection="column" minH="100vh">
       <Head>
@@ -15,7 +17,7 @@ export default function Class() {
       </Head>
       <Header />
       <Flex as="main" flex="1">
-        {!!slug ? <Video lessonSlug={slug as string} /> : <Box flex="1" />}
+        {!!lessonSlug ? <Video lessonSlug={lessonSlug} /> : <Box flex="1" />}
         <Sidebar />
       </Flex>
     </Box>

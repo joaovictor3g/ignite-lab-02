@@ -17,7 +17,7 @@ export function Lesson({ title, availableAt, slug, type }: LessonProps) {
     query: { slug: lessonSlug },
   } = useRouter();
 
-  const lessonActive = lessonSlug === slug;
+  const lessonActive = lessonSlug?.includes(slug);
 
   const isLessonAvailable = isPast(availableAt);
   const availableDateFormatted = format(
