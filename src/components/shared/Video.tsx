@@ -12,7 +12,7 @@ import {
 import { ButtonLink } from "../layout/ButtonLink";
 
 import "@vime/core/themes/default.css";
-import { gql, useQuery } from "@apollo/client";
+import { useGetLessonQueryBySlugQuery } from "@/graphql/generated";
 
 const Player = dynamic(() => import("../layout/Player"), {
   ssr: false,
@@ -36,30 +36,18 @@ interface GetLessonBySlugResponse {
   };
 }
 
-const GET_LESSON_BY_SLUG_QUERY = gql`
-  query GetLessonQueryBySlug($slug: String) {
-    lesson(where: { slug: $slug }) {
-      id
-      title
-      videoId
-      description
-      teacher {
-        avatarURL
-        bio
-        name
-      }
-    }
-  }
-`;
-
 export function Video({ lessonSlug }: VideoProps) {
-  const { data } = useQuery<GetLessonBySlugResponse>(GET_LESSON_BY_SLUG_QUERY, {
+  const { data, loading } = useGetLessonQueryBySlugQuery({
     variables: {
       slug: lessonSlug,
     },
   });
 
-  if (!data) return <Box flex="1">Carregando...</Box>;
+  if (loading) return <Box flex="1">Carregando...</Box>;
+
+  if (!data) return <Box flex="1">Sem dados</Box>;
+
+  if (!data.lesson) return <Box flex="1">Sem aulas</Box>;
 
   return (
     <Box flex="1">
@@ -78,30 +66,37 @@ export function Video({ lessonSlug }: VideoProps) {
               {data.lesson.description}
             </Text>
 
-            <Flex gap={4} mt={4}>
-              <Avatar
-                src={data.lesson.teacher.avatarURL}
-                name={data.lesson.teacher.name}
-                h="64px"
-                w="64px"
-                borderWidth="2px"
-                borderColor="blue.500"
-              />
+            {data.lesson.teacher && (
+              <Flex gap={4} mt={4}>
+                <Avatar
+                  src={data.lesson?.teacher.avatarURL}
+                  name={data.lesson.teacher.name}
+                  h="64px"
+                  w="64px"
+                  borderWidth="2px"
+                  borderColor="blue.500"
+                />
 
-              <Box>
-                <Text
-                  as="strong"
-                  fontSize="2xl"
-                  fontWeight="bold"
-                  display="block"
-                >
-                  {data.lesson.teacher.name}
-                </Text>
-                <Text as="span" color="gray.200" fontSize="sm" display="block">
-                  {data?.lesson.teacher.bio}
-                </Text>
-              </Box>
-            </Flex>
+                <Box>
+                  <Text
+                    as="strong"
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    display="block"
+                  >
+                    {data.lesson.teacher.name}
+                  </Text>
+                  <Text
+                    as="span"
+                    color="gray.200"
+                    fontSize="sm"
+                    display="block"
+                  >
+                    {data?.lesson.teacher.bio}
+                  </Text>
+                </Box>
+              </Flex>
+            )}
           </Box>
 
           <Box display="flex" flexDirection="column" gap={4}>

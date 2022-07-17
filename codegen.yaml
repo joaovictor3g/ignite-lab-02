@@ -1,10 +1,13 @@
-schema: http://my-graphql-api.com/graphql
-documents: "./src/**/*.tsx"
+schema: https://api-sa-east-1.hygraph.com/v2/cl5nx0u8213un01um9sp6celr/master
+documents: "./src/graphql/**/*.graphql"
 generates:
-  ./graphql/generated.ts:
+  ./src/graphql/generated.ts:
     plugins:
       - typescript
       - typescript-operations
-      - typescript-react-query
+      - typescript-react-apollo
     config:
-      fetcher: fetch
+      reactApolloVersion: 3
+      withHooks: true
+      withHOC: false
+      withComponent: false

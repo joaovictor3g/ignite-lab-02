@@ -1,4 +1,4 @@
-import { ApolloCache, ApolloError, gql, useMutation } from "@apollo/client";
+import { ApolloError } from "@apollo/client";
 import {
   Box,
   Button,
@@ -13,14 +13,7 @@ import {
 import Head from "next/head";
 import { FormEvent, useState } from "react";
 import Router from "next/router";
-
-const CREATE_SUBSCRIBER_MUTATION = gql`
-  mutation CreateSubscriber($name: String!, $email: String!) {
-    createSubscriber(data: { name: $name, email: $email }) {
-      id
-    }
-  }
-`;
+import { useCreateSubscriberMutation } from "@/graphql/generated";
 
 const DEFAULT_TOAST_OPTIONS: UseToastOptions = {
   title: "Erro ao se inscrever no evento",
@@ -35,9 +28,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const toast = useToast();
 
-  const [createSubscriber, { loading }] = useMutation(
-    CREATE_SUBSCRIBER_MUTATION
-  );
+  const [createSubscriber, { loading }] = useCreateSubscriberMutation();
 
   async function handleSubscribe(event: FormEvent) {
     event.preventDefault();
