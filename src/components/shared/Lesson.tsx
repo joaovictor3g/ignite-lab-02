@@ -3,6 +3,7 @@ import NextLink from "next/link";
 import { CheckCircle, Lock } from "phosphor-react";
 import { isPast, format } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
+import { useRouter } from "next/router";
 
 interface LessonProps {
   title: string;
@@ -12,6 +13,12 @@ interface LessonProps {
 }
 
 export function Lesson({ title, availableAt, slug, type }: LessonProps) {
+  const {
+    query: { slug: lessonSlug },
+  } = useRouter();
+
+  const lessonActive = lessonSlug === slug;
+
   const isLessonAvailable = isPast(availableAt);
   const availableDateFormatted = format(
     availableAt,
@@ -35,6 +42,7 @@ export function Lesson({ title, availableAt, slug, type }: LessonProps) {
           borderColor="gray.500"
           p={4}
           mt={2}
+          bg={lessonActive ? "green.500" : "transparent"}
         >
           <Box
             as="header"
@@ -46,7 +54,7 @@ export function Lesson({ title, availableAt, slug, type }: LessonProps) {
               <Text
                 as="span"
                 fontSize="sm"
-                color="blue.500"
+                color={lessonActive ? "white" : "blue.500"}
                 fontWeight="medium"
                 display="flex"
                 alignItems="center"
@@ -59,7 +67,7 @@ export function Lesson({ title, availableAt, slug, type }: LessonProps) {
               <Text
                 as="span"
                 fontSize="sm"
-                color="orange.500"
+                color={lessonActive ? "white" : "orange.500"}
                 fontWeight="medium"
                 display="flex"
                 alignItems="center"
